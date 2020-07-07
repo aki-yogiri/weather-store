@@ -13,8 +13,8 @@ service Weather {
 
 message QueryMessage {
   string location = 1;
-  string dtstart = 2;
-  string dtend = 3;
+  google.protobuf.Timestamp datetime_start = 2;
+  google.protobuf.Timestamp datetime_end = 3;
 }
 
 message WeatherReply {
