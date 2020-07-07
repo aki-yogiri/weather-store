@@ -13,7 +13,7 @@ import (
 	"syscall"
 )
 
-type Env struct {
+type DatabaseEnv struct {
 	Host     string
 	Port     int
 	User     string
@@ -21,16 +21,20 @@ type Env struct {
 	DBName   string
 }
 
+type ServerEnv struct {
+	Port int
+}
+
 func main() {
-	var goenv Env
-	envconfig.Process("WEATHER_STORE", &goenv)
+	var dbenv DatabaseEnv
+	envconfig.Process("DB", &dbenv)
 
 	db := &dao.WeatherImplPostgres{
-		Host:     goenv.Host,
-		Port:     goenv.Port,
-		User:     goenv.User,
-		Password: goenv.Password,
-		DBName:   goenv.DBName,
+		Host:     dbenv.Host,
+		Port:     dbenv.Port,
+		User:     dbenv.User,
+		Password: dbenv.Password,
+		DBName:   dbenv.DBName,
 	}
 
 	err := db.Connect()
@@ -39,7 +43,10 @@ func main() {
 	}
 	defer db.Close()
 
-	listenPort, err := net.Listen("tcp", ":19003")
+	var serverenv ServerEnv
+	envconfig.Process("SERVER", &serverenv)
+
+	listenPort, err := net.Listen("tcp", "0.0.0.0:"+string(serverenv.Port))
 	if err != nil {
 		log.Fatalln(err)
 	}
