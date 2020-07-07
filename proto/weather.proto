@@ -1,8 +1,10 @@
 syntax = "proto3";
 
-option go_package = "github.com/aki-yogiri/weather-dao/pb/weather";
+option go_package = "github.com/aki-yogiri/weather-store/pb/weather";
 
 package weather;
+
+import "google/protobuf/timestamp.proto";
 
 service Weather {
   rpc GetWeather (QueryMessage) returns (WeatherReply) {}
@@ -26,4 +28,5 @@ message WeatherMessage {
   uint32 clouds = 4;
   double wind = 5;
   uint32 wind_deg = 6;
+  google.protobuf.Timestamp timestamp = 7;
 }
