@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option go_package = "github.com/aki-yogiri/weather-dao/pb/weather";
+
+package weather;
+
+service Weather {
+  rpc GetWeather (QueryMessage) returns (WeatherReply) {}
+  rpc PutWeather (WeatherMessage) returns (WeatherReply) {}
+}
+
+message QueryMessage {
+  string location = 1;
+  string dtstart = 2;
+  string dtend = 3;
+}
+
+message WeatherReply {
+  repeated WeatherMessage weather = 1;
+}
+
+message WeatherMessage {
+  string location = 1;
+  string weather = 2;
+  double temperature = 3;
+  uint32 clouds = 4;
+  double wind = 5;
+  uint32 wind_deg = 6;
+}
