@@ -4,7 +4,7 @@ WORKDIR /go/src/github.com/aki-yogiri/weather-store
 
 COPY . .
 
-ENV GCO_ENABLED=0
+ENV CGO_ENABLED=0
 ENV GOOS=linux
 ENV SOARCH=amd64
 
