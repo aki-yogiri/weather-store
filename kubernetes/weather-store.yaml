@@ -22,21 +22,22 @@ spec:
   selector:
     matchLabels:
       app: weather-store
-    serviceName: "weather-store"
     replcicas: 1
     template:
       metadata:
         labels:
           app: weather-store
       spec:
+        imagePullSecrets:
+          - name: regcred
         containers:
           - image: 418330922897.dkr.ecr.ap-northeast-1.amazonaws.com/weather-store
             name: weather-store
             env:
               - name: DB_HOST
-                value: postgresql
+                value: "postgresql"
               - name: DB_PORT
-                value: 5432
+                value: "5432"
               - name: DB_USER
                 value: <username>
               - name: DB_PASSWORD
