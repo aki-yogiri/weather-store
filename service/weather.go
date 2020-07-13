@@ -6,6 +6,7 @@ import (
 	"github.com/aki-yogiri/weather-store/dao"
 	pb "github.com/aki-yogiri/weather-store/pb/weather"
 	"github.com/golang/protobuf/ptypes"
+	"log"
 )
 
 type WeatherService struct {
@@ -15,16 +16,19 @@ type WeatherService struct {
 func (s *WeatherService) GetWeather(ctx context.Context, message *pb.QueryMessage) (*pb.WeatherReply, error) {
 	dtstart, err := ptypes.Timestamp(message.DatetimeStart)
 	if err != nil {
+		log.Fatalln(err)
 		return nil, errors.New("Invalid timestamp: datetime_start")
 	}
 	dtend, err := ptypes.Timestamp(message.DatetimeEnd)
 	if err != nil {
+		log.Fatalln(err)
 		return nil, errors.New("Invalid timestamp: datetime_end")
 	}
 	query := &dao.Query{message.Location, &dtstart, &dtend}
 
 	result, err := s.Database.Find(query)
 	if err != nil {
+		log.Fatalln(err)
 		return nil, errors.New("Could not found record")
 	}
 
@@ -39,6 +43,7 @@ func (s *WeatherService) GetWeather(ctx context.Context, message *pb.QueryMessag
 }
 
 func (s *WeatherService) PutWeather(ctx context.Context, message *pb.WeatherMessage) (*pb.WeatherReply, error) {
+	log.Println("Recieve PutWeather Request: " + message.String())
 	var err error
 	w := &dao.Weather{}
 	w.Id = 0
@@ -50,11 +55,13 @@ func (s *WeatherService) PutWeather(ctx context.Context, message *pb.WeatherMess
 	w.WindDeg = message.WindDeg
 	w.Timestamp, err = ptypes.Timestamp(message.Timestamp)
 	if err != nil {
+		log.Fatalln(err)
 		return nil, errors.New("Invalid timestamp")
 	}
 
 	err = s.Database.Add(w)
 	if err != nil {
+		log.Fatalln(err)
 		return nil, errors.New("Could not add record")
 	}
 
