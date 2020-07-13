@@ -46,7 +46,6 @@ func (s *WeatherService) PutWeather(ctx context.Context, message *pb.WeatherMess
 	log.Println("Recieve PutWeather Request: " + message.String())
 	var err error
 	w := &dao.Weather{}
-	w.Id = 0
 	w.Location = message.Location
 	w.Weather = message.Weather
 	w.Temperature = message.Temperature

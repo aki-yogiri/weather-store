@@ -7,7 +7,6 @@ import (
 )
 
 type Weather struct {
-	Id          int    `gorm:"primary_key;unique;not null"`
 	Location    string `gorm:"size:255"`
 	Weather     string `gorm:"type:varchar(100)"`
 	Temperature float64
