@@ -18,7 +18,7 @@ type DatabaseEnv struct {
 	Port     int
 	User     string
 	Password string
-	DBName   string
+	Name     string
 }
 
 type ServerEnv struct {
@@ -34,7 +34,7 @@ func main() {
 		Port:     dbenv.Port,
 		User:     dbenv.User,
 		Password: dbenv.Password,
-		DBName:   dbenv.DBName,
+		Name:     dbenv.Name,
 	}
 
 	err := db.Connect()
