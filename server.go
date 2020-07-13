@@ -22,7 +22,7 @@ type DatabaseEnv struct {
 }
 
 type ServerEnv struct {
-	Port int
+	Port string
 }
 
 func main() {
@@ -46,7 +46,7 @@ func main() {
 	var serverenv ServerEnv
 	envconfig.Process("SERVER", &serverenv)
 
-	listenPort, err := net.Listen("tcp", "0.0.0.0:"+string(serverenv.Port))
+	listenPort, err := net.Listen("tcp", "0.0.0.0:"+serverenv.Port)
 	if err != nil {
 		log.Fatalln(err)
 	}

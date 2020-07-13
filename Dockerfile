@@ -13,6 +13,6 @@ RUN go build -o app server.go
 FROM alpine
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /go/src/github.com/aki-yogiri/weather-store/app /app
-ENV SERVER_PORT=8080
+ENV SERVER_PORT="8080"
 EXPOSE 8080
 ENTRYPOINT ["/app"]
