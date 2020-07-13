@@ -36,12 +36,12 @@ type WeatherImplPostgres struct {
 	User     string
 	Password string
 	Host     string
-	Port     int
+	Port     string
 	DBName   string
 }
 
 func (wip *WeatherImplPostgres) Connect() error {
-	connect := "host=" + wip.Host + " port=" + string(wip.Port) + " user=" + wip.User + " dbname=" + wip.DBName + "passwprd=" + wip.Password
+	connect := "host=" + wip.Host + " port=" + wip.Port + " user=" + wip.User + " dbname=" + wip.DBName + "passwprd=" + wip.Password
 	db, err := gorm.Open("postgres", connect)
 
 	if err != nil {

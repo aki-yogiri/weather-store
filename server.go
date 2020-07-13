@@ -15,7 +15,7 @@ import (
 
 type DatabaseEnv struct {
 	Host     string
-	Port     int
+	Port     string
 	User     string
 	Password string
 	Name     string
