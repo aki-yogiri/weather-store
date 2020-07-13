@@ -34,7 +34,7 @@ func main() {
 		Port:     dbenv.Port,
 		User:     dbenv.User,
 		Password: dbenv.Password,
-		Name:     dbenv.Name,
+		DBName:   dbenv.Name,
 	}
 
 	err := db.Connect()
