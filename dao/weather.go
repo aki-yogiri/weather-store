@@ -61,7 +61,7 @@ func (wip *WeatherImplPostgres) Find(q *Query) ([]Weather, error) {
 	var err error
 
 	if q.DatetimeStart != nil && q.DatetimeEnd != nil {
-		if q.DatetimeEnd.Befor(*q.DatetimeStart) {
+		if q.DatetimeEnd.Before(*q.DatetimeStart) {
 			return nil, errors.New("invalid argument: you should specify datetime_end > datetime_start")
 		}
 		err = wip.db.Where("location = ? AND timestamp BETWEEN ? AND ?", q.Location, q.DatetimeStart, q.DatetimeEnd).Find(&record).Error
