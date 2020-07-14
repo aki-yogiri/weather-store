@@ -80,14 +80,19 @@ func (wip *WeatherImplPostgres) Find(q *Query) ([]Weather, error) {
 }
 
 func (wip *WeatherImplPostgres) Add(w *Weather) error {
-	wip.db.Begin()
-	err := wip.db.Create(&w).Error
+	tx := wip.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	err := tx.Create(&w).Error
 	if err != nil {
-		wip.db.Rollback()
+		tx.Rollback()
 		return err
 	}
 
-	wip.db.Commit()
+	tx.Commit()
 
 	return nil
 }
