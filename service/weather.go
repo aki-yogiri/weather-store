@@ -2,10 +2,11 @@ package service
 
 import (
 	"context"
-	"errors"
 	"github.com/aki-yogiri/weather-store/dao"
 	pb "github.com/aki-yogiri/weather-store/pb/weather"
 	"github.com/golang/protobuf/ptypes"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"log"
 )
 
@@ -14,22 +15,36 @@ type WeatherService struct {
 }
 
 func (s *WeatherService) GetWeather(ctx context.Context, message *pb.QueryMessage) (*pb.WeatherReply, error) {
-	dtstart, err := ptypes.Timestamp(message.DatetimeStart)
-	if err != nil {
-		log.Fatalln(err)
-		return nil, errors.New("Invalid timestamp: datetime_start")
+	query := &dao.Query{}
+
+	if message.Location == "" {
+		log.Println("Error: Location not found")
+		return nil, status.Errorf(codes.InvalidArgument, "Location not found")
 	}
-	dtend, err := ptypes.Timestamp(message.DatetimeEnd)
-	if err != nil {
-		log.Fatalln(err)
-		return nil, errors.New("Invalid timestamp: datetime_end")
+	query.Location = message.Location
+
+	if message.DatetimeStart != nil {
+		dtstart, err := ptypes.Timestamp(message.DatetimeStart)
+		if err != nil {
+			log.Printf("Error: %v", err)
+			return nil, status.Errorf(codes.InvalidArgument, "Invalid timestamp: datetime_start")
+		}
+		query.DatetimeStart = &dtstart
 	}
-	query := &dao.Query{message.Location, &dtstart, &dtend}
+
+	if message.DatetimeEnd != nil {
+		dtend, err := ptypes.Timestamp(message.DatetimeEnd)
+		if err != nil {
+			log.Printf("Error: %v", err)
+			return nil, status.Errorf(codes.InvalidArgument, "Invalid timestamp: datetime_end")
+		}
+		query.DatetimeEnd = &dtend
+	}
 
 	result, err := s.Database.Find(query)
 	if err != nil {
-		log.Fatalln(err)
-		return nil, errors.New("Could not found record")
+		log.Printf("Error: %v", err)
+		return nil, status.Errorf(codes.InvalidArgument, "Could not execute query")
 	}
 
 	records := make([]*pb.WeatherMessage, len(result))
@@ -54,14 +69,14 @@ func (s *WeatherService) PutWeather(ctx context.Context, message *pb.WeatherMess
 	w.WindDeg = message.WindDeg
 	w.Timestamp, err = ptypes.Timestamp(message.Timestamp)
 	if err != nil {
-		log.Fatalln(err)
-		return nil, errors.New("Invalid timestamp")
+		log.Printf("Error: %v", err)
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid timestamp")
 	}
 
 	err = s.Database.Add(w)
 	if err != nil {
-		log.Fatalln(err)
-		return nil, errors.New("Could not add record")
+		log.Printf("Error: %v", err)
+		return nil, status.Errorf(codes.Aborted, "Could not execute add record")
 	}
 
 	return &pb.WeatherReply{Weather: []*pb.WeatherMessage{message}}, nil
