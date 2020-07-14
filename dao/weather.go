@@ -63,10 +63,10 @@ func (wip *WeatherImplPostgres) Find(q *Query) ([]Weather, error) {
 		err = wip.db.Where("location = ? AND timestamp BETWEEN ? AND ?", q.Location, q.DatetimeStart, q.DatetimeEnd).Find(&record).Error
 
 	} else if q.DatetimeStart != nil {
-		err = wip.db.Where("location = ? AND timestamp >=", q.Location, q.DatetimeStart).Find(&record).Error
+		err = wip.db.Where("location = ? AND timestamp >= ?", q.Location, q.DatetimeStart).Find(&record).Error
 
 	} else if q.DatetimeEnd != nil {
-		err = wip.db.Where("location = ? AND timestamp <=", q.Location, q.DatetimeEnd).Find(&record).Error
+		err = wip.db.Where("location = ? AND timestamp <= ?", q.Location, q.DatetimeEnd).Find(&record).Error
 
 	} else {
 		err = wip.db.Where("location = ?", q.Location).Find(&record).Error
