@@ -8,7 +8,7 @@ import (
 )
 
 type Weather struct {
-	Location    string `gorm:"size:255"`
+	Location    string `gorm:"type:varchar(100)"`
 	Weather     string `gorm:"type:varchar(100)"`
 	Temperature float64
 	Clouds      uint32
