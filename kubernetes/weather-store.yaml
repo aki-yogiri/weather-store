@@ -32,13 +32,6 @@ spec:
     spec:
       imagePullSecrets:
         - name: regcred
-      resources:
-        limits:
-          cpu: "1"
-          memory: "200Mi"
-        requests:
-          cpu: "0.5"
-          memory: "100Mi"
       containers:
         - image: 418330922897.dkr.ecr.ap-northeast-1.amazonaws.com/weather-store:v1.0.0
           name: weather-store
@@ -56,3 +49,10 @@ spec:
           ports:
             - containerPort: 8080
               name: weather-store
+          resources:
+            limits:
+              cpu: "1"
+              memory: "200Mi"
+            requests:
+              cpu: "0.5"
+              memory: "100Mi"
