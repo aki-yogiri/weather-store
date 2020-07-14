@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"errors"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"time"
@@ -60,7 +61,7 @@ func (wip *WeatherImplPostgres) Find(q *Query) ([]Weather, error) {
 	var err error
 
 	if q.DatetimeStart != nil && q.DatetimeEnd != nil {
-		if q.DatetimeStart > q.DatetimeEnd {
+		if q.DatetimeEnd.After(*q.DatetimeStart) {
 			return nil, errors.New("invalid argument: you should specify datetime_end > datetime_start")
 		}
 		err = wip.db.Where("location = ? AND timestamp BETWEEN ? AND ?", q.Location, q.DatetimeStart, q.DatetimeEnd).Find(&record).Error
